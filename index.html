@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>天照 Amaterasu</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="backdrop"></div>
+
+  <div class="launcher">
+    <!-- Сайдбар с иконкой Аматэрасу сверху -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="assets/icon_amaterasu.png" alt="Amaterasu" />
+      </div>
+      <div class="sidebar-divider"></div>
+
+      <div class="side-top">
+        <button class="side-btn active" title="Играть">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+        <button class="side-btn" id="versionsBtn" title="Версии">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </button>
+        <button class="side-btn" id="modsBtn" title="Моды">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <path d="M8 12h8"/>
+            <path d="M12 8v8"/>
+          </svg>
+        </button>
+        <button class="side-btn" id="themeBtn" title="Тема">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13.5" cy="6.5" r="0.5" fill="currentColor"/>
+            <circle cx="17.5" cy="10.5" r="0.5" fill="currentColor"/>
+            <circle cx="8.5" cy="7.5" r="0.5" fill="currentColor"/>
+            <circle cx="6.5" cy="12.5" r="0.5" fill="currentColor"/>
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.79 0 1.5-.71 1.5-1.5 0-.4-.15-.76-.4-1.04a1.5 1.5 0 0 1-.4-1.05c0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-10-10-10z"/>
+          </svg>
+        </button>
+        <button class="side-btn" title="Новости">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16v16H4z"/>
+            <line x1="8" y1="9" x2="16" y2="9"/>
+            <line x1="8" y1="13" x2="16" y2="13"/>
+            <line x1="8" y1="17" x2="12" y2="17"/>
+          </svg>
+        </button>
+        <button class="side-btn" id="serverBtn" title="Сервер Purple">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+            <line x1="6" y1="6" x2="6.01" y2="6"/>
+            <line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <button class="side-btn settings" id="settingsBtn" title="Настройки">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </aside>
+
+    <!-- Тайтлбар -->
+    <header class="titlebar">
+      <div class="title">Amaterasu</div>
+      <div class="window-controls">
+        <button class="win-btn" id="minBtn" title="Свернуть">&#x2014;</button>
+        <button class="win-btn close" id="closeBtn" title="Закрыть">&#x2715;</button>
+      </div>
+    </header>
+
+    <!-- Правая часть -->
+    <div class="right-pane">
+      <div class="play-area"></div>
+
+      <div class="footer">
+        <div class="version-selector" id="versionSelector">
+          <img src="assets/grass.png" alt="version" class="card-icon" />
+          <div class="card-text">
+            <div class="card-label">Версия</div>
+            <div class="card-value" id="versionValue">Не выбрано</div>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+
+        <div class="account-input">
+          <div class="card-label">Никнейм</div>
+          <div class="input-wrap">
+            <input type="text" id="usernameInput" class="username-input" value="Ame" maxlength="16" spellcheck="false" />
+          </div>
+        </div>
+      </div>
+
+      <button class="play-btn" id="playBtn">ИГРАТЬ</button>
+
+      <!-- Прогресс-бар запуска -->
+      <div id="launchProgressContainer" class="launch-progress-container">
+        <div class="launch-progress-track">
+          <div id="launchProgressBar" class="launch-progress-bar"></div>
+        </div>
+        <div id="launchProgressText" class="launch-progress-text"></div>
+      </div>
+
+      <div class="version-dropdown" id="versionDropdown">
+        <div class="dropdown-empty">Нет установленных версий</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Первый запуск: гид ====== -->
+  <div class="guide-overlay" id="guideOverlay">
+    <div class="guide-modal">
+      <div class="guide-left">
+        <div class="guide-glow"></div>
+        <img src="assets/guide_steve.svg" alt="Гид" class="guide-steve" />
+      </div>
+      <div class="guide-right">
+        <div class="guide-kicker">Первый запуск</div>
+        <h2 class="guide-title">Привет! Я твой личный гид</h2>
+        <p class="guide-text">
+          Я помогу тебе быстро настроить лаунчер: выбрать оформление, скачать версию Minecraft и подготовить запуск.
+        </p>
+        <div class="guide-steps">
+          <div class="guide-step active"><span>1</span> Приветствие</div>
+          <div class="guide-step"><span>2</span> Тема</div>
+          <div class="guide-step"><span>3</span> Версия</div>
+        </div>
+        <button class="guide-next" id="guideStartBtn">Далее</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Модальное окно "Менеджер версий" ====== -->
+  <div class="modal-overlay versions-modal" id="versionsModal">
+    <div class="modal versions-modal-content">
+      <header class="modal-header">
+        <button class="modal-refresh" id="versionsRefresh" title="Обновить список">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        </button>
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text">Версии</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="versionsClose" title="Закрыть">&#x2715;</button>
+      </header>
+
+      <div class="versions-toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" class="search-input" id="versionSearch" placeholder="Поиск версии..." spellcheck="false" />
+        </div>
+        <div class="mc-version-wrap" id="mcVersionWrap" style="display:none;">
+          <select class="search-input" id="mcVersionSelect" style="padding-left:12px;">
+            <option value="">Выбери версию Minecraft</option>
+          </select>
+        </div>
+        <div class="filters">
+          <button class="filter-chip active" data-filter="release">Release</button>
+          <button class="filter-chip" data-filter="forge">Forge</button>
+          <button class="filter-chip" data-filter="optifine">OptiFine</button>
+          <button class="filter-chip" data-filter="forge-optifine">ForgeOptiFine</button>
+        </div>
+      </div>
+
+      <div class="versions-body">
+        <div class="versions-loading" id="versionsLoading">
+          <div class="spinner"></div>
+          <div class="loading-text">Загрузка списка версий…</div>
+        </div>
+
+        <div class="versions-list" id="versionsList"></div>
+
+        <div class="versions-empty" id="versionsEmpty" style="display:none;">
+          Ничего не найдено
+        </div>
+      </div>
+
+      <div class="versions-status" id="versionsStatus"></div>
+    </div>
+  </div>
+
+  <!-- ====== Модальное окно "Мои моды" ====== -->
+  <div class="modal-overlay versions-modal" id="modsModal">
+    <div class="modal versions-modal-content">
+      <header class="modal-header">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text">Мои моды</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="modsClose" title="Закрыть">&#x2715;</button>
+      </header>
+
+      <div class="versions-body">
+        <div class="versions-loading" id="modsLoading" style="display:none;">
+          <div class="spinner"></div>
+          <div class="loading-text">Загрузка модов…</div>
+        </div>
+
+        <div class="versions-list" id="modsList"></div>
+
+        <div class="versions-empty" id="modsEmpty" style="display:none;">
+          Ничего не найдено
+        </div>
+      </div>
+
+      <div class="versions-status" id="modsStatus"></div>
+    </div>
+  </div>
+
+  <!-- ====== Модальное окно "Сервер Purple" ====== -->
+  <div class="modal-overlay versions-modal" id="serverModal">
+    <div class="modal versions-modal-content">
+      <header class="modal-header">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text">Purple • 1.21.4</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="serverClose" title="Закрыть">&#x2715;</button>
+      </header>
+
+      <div class="versions-body" style="padding: 20px;">
+        <!-- Статус сервера -->
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <div id="serverStatusDot" style="width: 14px; height: 14px; border-radius: 50%; background: #666;"></div>
+          <div>
+            <div id="serverStatusText" style="font-size: 15px; font-weight: 600;">Загрузка...</div>
+            <div id="serverPing" style="font-size: 12px; color: var(--text-muted);"></div>
+          </div>
+          <div style="margin-left: auto; text-align: right;">
+            <div id="serverPlayers" style="font-size: 18px; font-weight: 700; color: var(--accent-bright);">— / —</div>
+            <div style="font-size: 11px; color: var(--text-muted);">игроков</div>
+          </div>
+        </div>
+
+        <!-- Список игроков -->
+        <div style="margin-bottom: 8px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Онлайн игроки</div>
+        <div id="serverPlayersList" style="min-height: 80px; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+          <!-- Сюда будут добавляться игроки -->
+        </div>
+
+        <!-- Личный счётчик -->
+        <div style="margin: 16px 0 8px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Твоя статистика</div>
+        <div style="background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; font-size: 14px;">
+            <span>Наработано часов:</span>
+            <span id="personalHours" style="color: var(--accent-bright); font-weight: 600;">124 ч</span>
+          </div>
+        </div>
+
+        <!-- Топ игроков -->
+        <div style="margin-bottom: 8px; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Топ игроков</div>
+        <div id="serverTopList" style="background: rgba(0,0,0,0.25); border-radius: 8px; padding: 8px 12px; font-size: 13px;">
+          <!-- Сюда будет рендериться топ -->
+        </div>
+      </div>
+
+      <div class="versions-status" style="display: flex; gap: 10px; padding: 12px 16px;">
+        <button id="serverRefreshBtn" style="flex: 1; padding: 12px; background: #3a2f4a; color: #ffd755; border: 1px solid #d4a017; border-radius: 8px; cursor: pointer;">Обновить</button>
+        <button id="serverPlayBtn" style="flex: 2; padding: 12px; background: #d4a017; color: #1a1625; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Играть на Amaterasu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Мини-модалка игрока -->
+  <div class="modal-overlay" id="playerModal">
+    <div class="modal" style="width: 340px; max-height: 240px; background: #1a1625; border: 2px solid #d4a017;">
+      <header class="modal-header" style="background: #2a2438; border-bottom: 1px solid #d4a017;">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text" id="playerModalNick" style="color: #ffd755;">Игрок</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="playerModalClose" title="Закрыть">&#x2715;</button>
+      </header>
+      <div class="modal-body" style="padding: 30px 24px; text-align: center; background: #1a1625;">
+        <div style="margin-bottom: 24px; color: #a8a098; font-size: 15px;">Информация об игроке</div>
+        <button id="copyNickBtn" 
+                style="width: 100%; padding: 16px 0; font-size: 16px; background: #ffd755; color: #1a1625; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 215, 85, 0.4);">
+          Скопировать ник
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка выбора версии для Purple -->
+  <div class="modal-overlay" id="purpleVersionModal">
+    <div class="modal" style="width: 380px; max-height: 320px;">
+      <header class="modal-header">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text">Выбери тип версии 1.21.4</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="purpleVersionClose" title="Закрыть">&#x2715;</button>
+      </header>
+      <div class="modal-body" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <button id="purpleVanillaBtn" style="width:100%; padding:14px; background:#3a2f4a; color:#ffd755; border:1px solid #d4a017; border-radius:8px; cursor:pointer; font-size:15px;">Ваниль 1.21.4</button>
+        <button id="purpleForgeBtn" style="width:100%; padding:14px; background:#3a2f4a; color:#ffd755; border:1px solid #d4a017; border-radius:8px; cursor:pointer; font-size:15px;">Forge 1.21.4</button>
+        <button id="purpleOptifineBtn" style="width:100%; padding:14px; background:#3a2f4a; color:#ffd755; border:1px solid #d4a017; border-radius:8px; cursor:pointer; font-size:15px;">OptiFine 1.21.4</button>
+        <button id="purpleForgeOptifineBtn" style="width:100%; padding:14px; background:#3a2f4a; color:#ffd755; border:1px solid #d4a017; border-radius:8px; cursor:pointer; font-size:15px;">Forge + OptiFine 1.21.4</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Глобальный оверлей при перетаскивании файла на окно -->
+  <div class="global-drop-overlay" id="globalDropOverlay"></div>
+
+  <!-- Превью-панель НАД лаунчером — живые примеры элементов -->
+  <div class="theme-preview-panel" id="themePreviewPanel">
+    <div class="preview-header">
+      <span class="preview-title">Предпросмотр темы</span>
+      <span class="preview-hex" id="previewHex">#D4A017</span>
+    </div>
+    <div class="preview-elements">
+      <!-- Mini ИГРАТЬ -->
+      <button class="preview-play-btn" id="previewPlayBtn">ИГРАТЬ</button>
+
+      <!-- Mini sidebar buttons -->
+      <div class="preview-sidebar-group">
+        <button class="preview-side-btn active">▶</button>
+        <button class="preview-side-btn">◆</button>
+        <button class="preview-side-btn">⚙</button>
+      </div>
+
+      <!-- Mini версия + ник -->
+      <div class="preview-footer-group">
+        <div class="preview-card">
+          <div class="preview-card-icon"></div>
+          <div class="preview-card-text">
+            <div class="preview-card-label">Версия</div>
+            <div class="preview-card-value">1.21.1</div>
+          </div>
+        </div>
+        <div class="preview-input-wrap">
+          <span class="preview-input-text">Ame</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Модальное окно "Тема" ====== -->
+  <div class="modal-overlay" id="themeModal">
+    <div class="modal" id="themeModalContent">
+      <header class="modal-header">
+        <button class="modal-share" id="themeShare" title="Поделиться темой">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5"  r="3"/>
+            <circle cx="6"  cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59"  y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51"  x2="8.59"  y2="10.49"/>
+          </svg>
+        </button>
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text">Тема</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="themeClose" title="Закрыть">&#x2715;</button>
+      </header>
+
+      <div class="modal-body">
+        <!-- Цвета -->
+        <div class="section-header">Цвета</div>
+
+        <div class="color-row">
+          <button class="color-swatch" data-color="primary" title="Основной цвет"></button>
+          <div class="color-label">Основной</div>
+          <div class="color-hex" data-hex="primary">#d4a017</div>
+          <input type="color" data-picker="primary" class="color-input-hidden" />
+        </div>
+
+        <div class="color-row">
+          <button class="color-swatch" data-color="panel" title="Цвет панелей (тайтлбар, сайдбар, футер)"></button>
+          <div class="color-label">Панели</div>
+          <div class="color-hex" data-hex="panel">#12101A</div>
+          <input type="color" data-picker="panel" class="color-input-hidden" />
+        </div>
+
+        <div class="color-row">
+          <button class="color-swatch" data-color="playBtn" title="Цвет кнопки ИГРАТЬ"></button>
+          <div class="color-label">Кнопка ИГРАТЬ</div>
+          <div class="color-hex" data-hex="playBtn">#E23535</div>
+          <input type="color" data-picker="playBtn" class="color-input-hidden" />
+        </div>
+
+        <div class="color-row">
+          <button class="color-swatch" data-color="hover" title="Цвет наведения для всех элементов"></button>
+          <div class="color-label">Наведение</div>
+          <div class="color-hex" data-hex="hover">#FFD755</div>
+          <input type="color" data-picker="hover" class="color-input-hidden" />
+        </div>
+
+        <button class="act-btn" id="resetThemeBtn">Сбросить цвета</button>
+
+        <div class="separator"></div>
+
+        <!-- Фон -->
+        <div class="section-header centered">🖼 Фон</div>
+
+        <!-- Drop-зона -->
+        <div class="drop-zone" id="dropZone">
+          <svg class="drop-icon" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <div class="drop-text">
+            <span class="drop-main">Перетащи файл сюда</span>
+            <span class="drop-sub">или нажми для выбора</span>
+            <span class="drop-formats">GIF · PNG · JPG</span>
+          </div>
+          <div class="drop-filename" id="bgPathLabel"></div>
+        </div>
+
+        <button class="act-btn" id="resetBgBtn" style="margin-top: 10px;">Сбросить фон</button>
+
+        <input type="file" id="bgFileInput" accept=".gif,.png,.jpg,.jpeg" class="color-input-hidden" />
+
+        <button class="guide-theme-next" id="guideThemeNext">Далее к выбору версии</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Модальное окно "Настройки" ====== -->
+  <div class="modal-overlay settings-modal" id="settingsModal">
+    <div class="modal settings-modal-content">
+      <header class="modal-header">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text">Настройки</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="settingsClose" title="Закрыть">&#x2715;</button>
+      </header>
+
+      <div class="modal-body settings-body">
+        <div class="settings-hero">
+          <div class="settings-hero-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="16" height="16" rx="2"/>
+              <rect x="9" y="9" width="6" height="6" rx="1"/>
+              <line x1="9" y1="1" x2="9" y2="4"/>
+              <line x1="15" y1="1" x2="15" y2="4"/>
+              <line x1="9" y1="20" x2="9" y2="23"/>
+              <line x1="15" y1="20" x2="15" y2="23"/>
+              <line x1="20" y1="9" x2="23" y2="9"/>
+              <line x1="20" y1="15" x2="23" y2="15"/>
+              <line x1="1" y1="9" x2="4" y2="9"/>
+              <line x1="1" y1="15" x2="4" y2="15"/>
+            </svg>
+          </div>
+          <div>
+            <div class="settings-hero-title">Память Minecraft</div>
+            <div class="settings-hero-sub">Выбери, сколько RAM выделять игре при запуске</div>
+          </div>
+        </div>
+
+        <div class="ram-card">
+          <div class="ram-card-top">
+            <div>
+              <div class="ram-label">Выделенная RAM</div>
+              <div class="ram-hint">Рекомендуется 4–6 GB для обычной игры</div>
+            </div>
+            <div class="ram-value-badge"><span id="ramValue">4</span> GB</div>
+          </div>
+
+          <div class="ram-slider-wrap">
+            <input type="range" id="ramSlider" class="ram-slider" min="1" max="16" step="1" value="4" />
+            <div class="ram-scale">
+              <span>1</span>
+              <span>4</span>
+              <span>8</span>
+              <span>12</span>
+              <span>16 GB</span>
+            </div>
+          </div>
+
+          <div class="ram-bar-shell">
+            <div class="ram-bar-fill" id="ramBarFill"></div>
+          </div>
+        </div>
+
+        <div class="settings-note">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>Не ставь всю память компьютера. Оставь Windows хотя бы 3–4 GB.</span>
+        </div>
+
+        <div class="settings-switches">
+          <label class="setting-switch-row">
+            <div class="setting-switch-text">
+              <span class="setting-switch-title">Оптимизация запуска</span>
+              <span class="setting-switch-sub">Добавляет JVM-аргументы для более плавной игры</span>
+            </div>
+            <input type="checkbox" id="optimizeToggle" class="setting-toggle" />
+            <span class="toggle-ui"></span>
+          </label>
+
+          <label class="setting-switch-row">
+            <div class="setting-switch-text">
+              <span class="setting-switch-title">Проверять файлы перед запуском</span>
+              <span class="setting-switch-sub">Проверяет libraries/assets и докачивает битые файлы</span>
+            </div>
+            <input type="checkbox" id="verifyFilesToggle" class="setting-toggle" />
+            <span class="toggle-ui"></span>
+          </label>
+
+          <label class="setting-switch-row">
+            <div class="setting-switch-text">
+              <span class="setting-switch-title">Сворачивать лаунчер после запуска</span>
+              <span class="setting-switch-sub">После старта Minecraft лаунчер уйдёт в панель задач</span>
+            </div>
+            <input type="checkbox" id="minimizeAfterLaunchToggle" class="setting-toggle" />
+            <span class="toggle-ui"></span>
+          </label>
+
+          <label class="setting-switch-row">
+            <div class="setting-switch-text">
+              <span class="setting-switch-title">Автоматические FPS-настройки</span>
+              <span class="setting-switch-sub">Если включено, лаунчер применяет рекомендуемые options.txt / optionsof.txt перед запуском</span>
+            </div>
+            <input type="checkbox" id="autoApplySettingsToggle" class="setting-toggle" />
+            <span class="toggle-ui"></span>
+          </label>
+        </div>
+
+        <div class="settings-actions">
+          <button class="act-btn" id="resetRamBtn">Сбросить на 4 GB</button>
+          <button class="act-btn primary" id="saveSettingsBtn">Готово</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Тост-уведомление об экспорте темы -->
+  <div class="share-toast" id="shareToast">
+    <svg class="share-toast-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <div class="share-toast-text">
+      <div class="share-toast-title" id="shareToastTitle">Тема сохранена!</div>
+      <div class="share-toast-sub" id="shareToastSub">Файл лежит на рабочем столе</div>
+    </div>
+  </div>
+
+  <!-- Мини-модалка ввода имени темы -->
+  <div class="name-prompt-overlay" id="namePromptOverlay">
+    <div class="name-prompt">
+      <div class="name-prompt-title">Название темы</div>
+      <input type="text" class="name-prompt-input" id="namePromptInput" placeholder="Моя тема" maxlength="40" spellcheck="false" />
+      <div class="name-prompt-buttons">
+        <button class="act-btn" id="namePromptCancel">Отмена</button>
+        <button class="act-btn primary" id="namePromptOk">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Пиксельное растворение при сворачивании -->
+  <div class="pixel-dissolve-overlay" id="pixelDissolveOverlay" aria-hidden="true"></div>
+
+  <!-- Анимация сворачивания в панель задач -->
+  <div class="minimize-drop" id="minimizeDrop" aria-hidden="true">
+    <img src="assets/icon_amaterasu.png" alt="" />
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+ofChunkUpdates:1
+ofChunkUpdatesDynamic:true
+ofLazyChunkLoading:true
+ofRenderRegions:true
+ofSmartAnimations:true
+ofFastMath:true
+ofFastRender:false
+ofSmoothFps:false
+ofSmoothWorld:false
+ofDynamicFov:false

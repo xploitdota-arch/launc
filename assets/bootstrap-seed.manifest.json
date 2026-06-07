@@ -1,0 +1,12 @@
+{
+  "version": "2026-06-07T06-25-22-569Z",
+  "builtAt": "2026-06-07T06:25:43.122Z",
+  "fileCount": 4395,
+  "uncompressedSize": 909263135,
+  "sourceDir": "C:\\Users\\skadi\\AppData\\Roaming\\.meloncher",
+  "injectedTemplates": [
+    "options.txt",
+    "optionsof.txt"
+  ],
+  "notes": "bootstrap-seed содержимое должно распаковываться прямо в .meloncher/"
+}

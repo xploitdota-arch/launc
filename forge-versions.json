@@ -1,0 +1,92 @@
+{
+  "forgeVersions": [
+    {
+      "id": "1.20.4-forge-49.0.30-optifine",
+      "baseVersion": "1.20.4",
+      "type": "forgeoptifine",
+      "forgeVersion": "49.0.30",
+      "forgeBuild": "1.20.4-49.0.30",
+      "optifineVersion": "HD_U_I6",
+      "javaVersion": 17,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.4-49.0.30/forge-1.20.4-49.0.30-installer.jar",
+      "displayName": "1.20.4 Forge 49.0.30 + OptiFine I6"
+    },
+    {
+      "id": "1.20.1-forge-47.2.0-optifine",
+      "baseVersion": "1.20.1",
+      "type": "forgeoptifine",
+      "forgeVersion": "47.2.0",
+      "forgeBuild": "1.20.1-47.2.0",
+      "optifineVersion": "HD_U_I2",
+      "javaVersion": 17,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.2.0/forge-1.20.1-47.2.0-installer.jar",
+      "displayName": "1.20.1 Forge 47.2.0 + OptiFine I2"
+    },
+    {
+      "id": "1.19.4-forge-45.2.0-optifine",
+      "baseVersion": "1.19.4",
+      "type": "forgeoptifine",
+      "forgeVersion": "45.2.0",
+      "forgeBuild": "1.19.4-45.2.0",
+      "optifineVersion": "HD_U_I2",
+      "javaVersion": 17,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.19.4-45.2.0/forge-1.19.4-45.2.0-installer.jar",
+      "displayName": "1.19.4 Forge 45.2.0 + OptiFine I2"
+    },
+    {
+      "id": "1.18.2-forge-40.2.0-optifine",
+      "baseVersion": "1.18.2",
+      "type": "forgeoptifine",
+      "forgeVersion": "40.2.0",
+      "forgeBuild": "1.18.2-40.2.0",
+      "optifineVersion": "HD_U_I8",
+      "javaVersion": 17,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.18.2-40.2.0/forge-1.18.2-40.2.0-installer.jar",
+      "displayName": "1.18.2 Forge 40.2.0 + OptiFine I8"
+    },
+    {
+      "id": "1.16.5-forge-36.2.2-optifine",
+      "baseVersion": "1.16.5",
+      "type": "forgeoptifine",
+      "forgeVersion": "36.2.2",
+      "forgeBuild": "1.16.5-36.2.2",
+      "optifineVersion": "HD_U_G9",
+      "javaVersion": 8,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.2/forge-1.16.5-36.2.2-installer.jar",
+      "displayName": "1.16.5 Forge 36.2.2 + OptiFine G9"
+    },
+    {
+      "id": "1.12.2-forge-14.23.5.2858-optifine",
+      "baseVersion": "1.12.2",
+      "type": "forgeoptifine",
+      "forgeVersion": "14.23.5.2858",
+      "forgeBuild": "1.12.2-14.23.5.2858",
+      "optifineVersion": "HD_U_G9",
+      "javaVersion": 8,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.12.2-14.23.5.2858/forge-1.12.2-14.23.5.2858-installer.jar",
+      "displayName": "1.12.2 Forge 14.23.5.2858 + OptiFine G9"
+    },
+    {
+      "id": "1.20.2-forge-47.1.0-optifine",
+      "baseVersion": "1.20.2",
+      "type": "forgeoptifine",
+      "forgeVersion": "47.1.0",
+      "forgeBuild": "1.20.2-47.1.0",
+      "optifineVersion": "HD_U_I3",
+      "javaVersion": 17,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.2-47.1.0/forge-1.20.2-47.1.0-installer.jar",
+      "displayName": "1.20.2 Forge 47.1.0 + OptiFine I3"
+    },
+    {
+      "id": "1.21.1-forge-53.0.0-optifine",
+      "baseVersion": "1.21.1",
+      "type": "forgeoptifine",
+      "forgeVersion": "53.0.0",
+      "forgeBuild": "1.21.1-53.0.0",
+      "optifineVersion": "HD_U_I2",
+      "javaVersion": 21,
+      "forgeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.1-53.0.0/forge-1.21.1-53.0.0-installer.jar",
+      "displayName": "1.21.1 Forge 53.0.0 + OptiFine I2"
+    }
+  ]
+}

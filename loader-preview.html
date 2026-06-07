@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Превью лоудера</title>
+  <style>
+    @font-face {
+      font-family: 'YujiSyuku';
+      src: url('assets/yuji-syuku.ttf') format('truetype');
+    }
+    @font-face {
+      font-family: 'Minecraft';
+      src: url('assets/minecraft-rus.ttf') format('truetype');
+    }
+
+    :root {
+      --bg:        #12101a;
+      --main:      #ffd755;
+      --grad-end:  #d4a017;
+
+      --bg-r:    18;  --bg-g:    16;  --bg-b:    26;
+      --main-r: 255;  --main-g: 215;  --main-b:  85;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .panel {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      padding: 14px;
+      background: rgba(var(--bg-r), var(--bg-g), var(--bg-b), 0.95);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
+      border-radius: 16px;
+      border: 1px solid rgba(var(--main-r), var(--main-g), var(--main-b), 0.3);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.7),
+        0 0 32px rgba(var(--main-r), var(--main-g), var(--main-b), 0.25);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .header-title {
+      font-family: 'Minecraft', sans-serif;
+      font-size: 11px;
+      color: rgba(var(--main-r), var(--main-g), var(--main-b), 0.85);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      -webkit-font-smoothing: none;
+    }
+
+    .header-hex {
+      font-family: 'Consolas', monospace;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    /* Мини-сплеш */
+    .mini-splash {
+      position: relative;
+      height: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(var(--main-r), var(--main-g), var(--main-b), 0.2);
+    }
+
+    .ms-glow {
+      position: absolute;
+      width: 160px; height: 160px;
+      left: 50%; top: 55px;
+      margin-left: -80px; margin-top: -80px;
+      background: radial-gradient(circle,
+        rgba(var(--main-r), var(--main-g), var(--main-b), 0.45) 0%,
+        rgba(var(--main-r), var(--main-g), var(--main-b), 0.16) 40%,
+        transparent 70%);
+      filter: blur(10px);
+      animation: msGlowFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes msGlowFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%      { transform: translate(8px, 5px) scale(1.12); }
+    }
+
+    .ms-title {
+      position: absolute;
+      top: 16px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'YujiSyuku', serif;
+      font-size: 34px;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, var(--main) 0%, var(--grad-end) 100%);
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+              color: transparent;
+      filter: drop-shadow(0 0 8px rgba(var(--main-r), var(--main-g), var(--main-b), 0.55));
+      animation: msTitlePulse 3.5s ease-in-out infinite;
+    }
+
+    @keyframes msTitlePulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(var(--main-r), var(--main-g), var(--main-b), 0.55)); }
+      50%      { filter: drop-shadow(0 0 14px rgba(var(--main-r), var(--main-g), var(--main-b), 0.85)); }
+    }
+
+    .ms-subtitle {
+      position: absolute;
+      top: 62px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Minecraft', sans-serif;
+      font-size: 9px;
+      color: rgba(var(--main-r), var(--main-g), var(--main-b), 0.85);
+      letter-spacing: 4px;
+      -webkit-font-smoothing: none;
+    }
+
+    .ms-line {
+      position: absolute;
+      left: 22px; right: 22px;
+      top: 84px;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(var(--main-r), var(--main-g), var(--main-b), 0.5) 25%,
+        rgba(var(--main-r), var(--main-g), var(--main-b), 0.95) 50%,
+        rgba(var(--main-r), var(--main-g), var(--main-b), 0.5) 75%,
+        transparent 100%);
+      animation: msLineShimmer 2s ease-in-out infinite;
+    }
+
+    @keyframes msLineShimmer {
+      0%, 100% { opacity: .65; }
+      50%      { opacity: 1; }
+    }
+
+    .ms-status {
+      position: absolute;
+      top: 100px; left: 0; right: 0;
+      text-align: center;
+      font-size: 10px;
+      color: rgba(var(--main-r), var(--main-g), var(--main-b), 0.7);
+      letter-spacing: 0.5px;
+    }
+
+    .ms-bar {
+      position: absolute;
+      left: 18px; right: 18px;
+      top: 132px;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(var(--main-r), var(--main-g), var(--main-b), 0.3);
+      border-radius: 4px;
+      overflow: visible;
+    }
+
+    .ms-bar-inner {
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .ms-bar-fill {
+      position: absolute;
+      top: 0; bottom: 0; left: 0;
+      width: 0%;
+      background: linear-gradient(90deg, var(--grad-end) 0%, var(--main) 100%);
+      box-shadow: 0 0 10px rgba(var(--main-r), var(--main-g), var(--main-b), 0.65);
+      transition: width 0.1s linear;
+    }
+
+    .ms-bar-fill::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%);
+      animation: msShimmer 1.4s linear infinite;
+      transform: translateX(-100%);
+    }
+
+    @keyframes msShimmer {
+      to { transform: translateX(100%); }
+    }
+
+    .ms-bar-edge {
+      position: absolute;
+      top: 50%; left: 0;
+      width: 26px; height: 26px;
+      margin-top: -13px; margin-left: -13px;
+      background: radial-gradient(circle,
+        rgba(var(--main-r), var(--main-g), var(--main-b), 1) 0%,
+        rgba(var(--main-r), var(--main-g), var(--main-b), 0.55) 35%,
+        transparent 70%);
+      filter: blur(1.5px);
+      pointer-events: none;
+      transition: left 0.1s linear;
+      opacity: 0;
+    }
+
+    .ms-bar-edge.active { opacity: 1; }
+
+    .ms-pct {
+      position: absolute;
+      top: 152px; left: 0; right: 0;
+      text-align: center;
+      font-family: 'Minecraft', sans-serif;
+      font-size: 10px;
+      color: rgba(var(--main-r), var(--main-g), var(--main-b), 0.95);
+      letter-spacing: 1.5px;
+      -webkit-font-smoothing: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <div class="header">
+      <div class="header-title">Превью лоудера</div>
+      <div class="header-hex" id="headerHex">#FFD755</div>
+    </div>
+
+    <div class="mini-splash">
+      <div class="ms-glow"></div>
+      <div class="ms-title">天照</div>
+      <div class="ms-subtitle">AMATERASU</div>
+      <div class="ms-line"></div>
+      <div class="ms-status">Загрузка ресурсов…</div>
+      <div class="ms-bar" id="msBar">
+        <div class="ms-bar-inner">
+          <div class="ms-bar-fill" id="msBarFill"></div>
+        </div>
+        <div class="ms-bar-edge" id="msBarEdge"></div>
+      </div>
+      <div class="ms-pct" id="msPct">0%</div>
+    </div>
+  </div>
+
+  <script>
+    function hexToRgb(hex) {
+      return {
+        r: parseInt(hex.slice(1, 3), 16),
+        g: parseInt(hex.slice(3, 5), 16),
+        b: parseInt(hex.slice(5, 7), 16),
+      };
+    }
+
+    function applyColors() {
+      const panel = localStorage.getItem('theme_panel') || '#12101a';
+      const hover = localStorage.getItem('theme_hover') || '#ffd755';
+      const prim  = localStorage.getItem('theme_primary') || '#d4a017';
+
+      const bg = hexToRgb(panel);
+      const mn = hexToRgb(hover);
+
+      const r = document.documentElement;
+      r.style.setProperty('--bg', panel);
+      r.style.setProperty('--main', hover);
+      r.style.setProperty('--grad-end', prim);
+      r.style.setProperty('--bg-r', bg.r);
+      r.style.setProperty('--bg-g', bg.g);
+      r.style.setProperty('--bg-b', bg.b);
+      r.style.setProperty('--main-r', mn.r);
+      r.style.setProperty('--main-g', mn.g);
+      r.style.setProperty('--main-b', mn.b);
+
+      document.getElementById('headerHex').textContent = hover.toUpperCase();
+    }
+
+    applyColors();
+
+    // Слушаем сообщения от главного окна (применить цвета и обновить hex)
+    if (window.electronAPI && window.electronAPI.onLoaderPreviewUpdate) {
+      window.electronAPI.onLoaderPreviewUpdate((data) => {
+        if (data.panel)   localStorage.setItem('theme_panel', data.panel);
+        if (data.hover)   localStorage.setItem('theme_hover', data.hover);
+        if (data.primary) localStorage.setItem('theme_primary', data.primary);
+        applyColors();
+      });
+    }
+
+    // Анимация прогресса (зацикленная)
+    const msBar     = document.getElementById('msBar');
+    const msBarFill = document.getElementById('msBarFill');
+    const msBarEdge = document.getElementById('msBarEdge');
+    const msPct     = document.getElementById('msPct');
+
+    let progress = 0;
+    let lastTime = 0;
+
+    function loop(now) {
+      if (!lastTime) lastTime = now;
+      const dt = Math.min(2.5, (now - lastTime) / 16.67);
+      lastTime = now;
+
+      progress += 0.006 * dt;
+      if (progress >= 1.05) progress = 0;
+
+      const p = Math.min(1, progress);
+      const barWidth = msBar.getBoundingClientRect().width;
+      msBarFill.style.width = (p * 100).toFixed(2) + '%';
+      msBarEdge.style.left  = (barWidth * p) + 'px';
+      msPct.textContent     = Math.round(p * 100) + '%';
+
+      if (p > 0.01 && p < 0.99) msBarEdge.classList.add('active');
+      else msBarEdge.classList.remove('active');
+
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
