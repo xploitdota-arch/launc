@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<style>
+  /* Базовые переменные темы (как в :root проекта) */
+  .theme-host{
+    --panel-rgb:18,16,22;
+    --bg-panel:rgba(18,16,22,.85);
+    --bg-dropdown:rgba(20,18,24,.97);
+    --accent:#d4a017; --accent-bright:#ffd755;
+    --accent-rgb:212,160,23;
+    --accent-glow:rgba(212,160,23,.45);
+    --accent-soft:rgba(255,215,85,.15);
+    --accent-soft-2:rgba(255,215,85,.20);
+    --accent-border:rgba(212,160,23,.45);
+    --panel-solid:#12101a; --panel-header:#2a2735; --panel-deep:#0a0810; --panel-line:#36313f;
+    --text-muted:#6f6860;
+  }
+  /* Альтернативная тема (фиолетовая) */
+  .theme-host.purple{
+    --panel-rgb:26,22,37;
+    --bg-panel:rgba(26,22,37,.85);
+    --bg-dropdown:rgba(26,22,37,.97);
+    --accent:#7c3aed; --accent-bright:#c4b5fd;
+    --accent-rgb:124,58,237;
+    --accent-glow:rgba(124,58,237,.45);
+    --accent-soft:rgba(196,181,253,.15);
+    --accent-soft-2:rgba(196,181,253,.22);
+    --accent-border:rgba(124,58,237,.45);
+    --panel-solid:#1a1625; --panel-header:#2a2438; --panel-deep:#0f0c17; --panel-line:#3a2f4a;
+  }
+  /* Зелёная тема */
+  .theme-host.green{
+    --accent:#16a34a; --accent-bright:#4ade80; --accent-rgb:22,163,74;
+    --accent-soft:rgba(74,222,128,.15); --accent-soft-2:rgba(74,222,128,.22);
+    --accent-border:rgba(22,163,74,.45);
+    --panel-solid:#0f1a12; --panel-header:#14241a; --panel-deep:#0a120c; --panel-line:#1c3326;
+    --bg-panel:rgba(15,26,18,.9);
+  }
+
+  body{background:#07060c;font-family:'Segoe UI',sans-serif;margin:0;padding:30px;color:#eee;}
+  h2{color:#aaa;font-weight:500;font-size:14px;margin:20px 0 10px;}
+  .row{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;}
+
+  .card{width:260px;background:var(--panel-solid);border:2px solid var(--accent);border-radius:12px;overflow:hidden;}
+  .card .hd{background:var(--panel-header);padding:12px;text-align:center;color:var(--accent-bright);
+    font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:13px;}
+  .card .bd{padding:14px;display:flex;flex-direction:column;gap:8px;}
+  .btn{padding:12px;background:var(--accent);color:var(--panel-solid);border:none;border-radius:8px;font-weight:700;cursor:pointer;}
+  .btn.ghost{background:var(--panel-line);color:var(--accent-bright);border:1px solid var(--accent);}
+  .label{color:var(--accent-bright);font-size:12px;font-weight:700;text-transform:uppercase;}
+
+  /* виджет «кто онлайн» */
+  .ofw{width:240px;background:var(--bg-panel);border:1px solid var(--accent-border);border-radius:12px;padding:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 24px rgba(var(--accent-rgb),.12);}
+  .ofw .h{color:var(--accent-bright);font-size:12px;font-weight:700;text-transform:uppercase;display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+  .ofw .dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;}
+  .ofw .r{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;cursor:pointer;}
+  .ofw .r:hover{background:var(--accent-soft-2);}
+  .ofw .nm{flex:1;color:#fff;font-size:12px;font-weight:600;}
+  .ofw .tm{color:#888;font-size:10px;}
+</style></head>
+<body>
+<script>
+  function makeBlock(){
+    return `
+    <div class="row">
+      <div class="card"><div class="hd">── Сервер Purple ──</div>
+        <div class="bd"><span class="label">Онлайн игроки</span>
+          <button class="btn ghost">Обновить</button>
+          <button class="btn">Играть на Amaterasu</button></div></div>
+      <div class="card"><div class="hd">── Друзья ──</div>
+        <div class="bd"><span class="label">Мои друзья (2)</span>
+          <button class="btn">Добавить</button></div></div>
+      <div class="card"><div class="hd">── 📰 Новости ──</div>
+        <div class="bd"><span class="label">Из Discord</span>
+          <div style="border-left:3px solid var(--accent);background:var(--panel-deep);padding:10px;border-radius:8px;font-size:12px;color:#ccc;">Сервер обновлён до 1.21.4!</div></div></div>
+      <div class="ofw"><div class="h"><span class="dot"></span>2 онлайн</div>
+        <div class="r"><span class="nm">Steve</span><span class="tm">3ч 12м</span></div>
+        <div class="r"><span class="nm">Alex</span><span class="tm">1ч 05м</span></div></div>
+    </div>`;
+  }
+  document.body.insertAdjacentHTML('beforeend',
+    '<h2>Тема по умолчанию (янтарная)</h2><div class="theme-host">'+makeBlock()+'</div>'+
+    '<h2>Тема «фиолетовая»</h2><div class="theme-host purple">'+makeBlock()+'</div>'+
+    '<h2>Тема «зелёная»</h2><div class="theme-host green">'+makeBlock()+'</div>'
+  );
+</script>
+</body></html>

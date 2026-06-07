@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<style>
+  body{background:#0f0c17;font-family:'Segoe UI',sans-serif;padding:40px;display:flex;gap:30px;flex-wrap:wrap;}
+  :root{--accent-bright:#7c3aed;--text-primary:#c4b5fd;--text-secondary:#a8a098;--accent-soft:rgba(124,58,237,.4);--danger:#ef4444;}
+  .modal{width:360px;background:#1a1625;border:2px solid #7c3aed;border-radius:12px;overflow:hidden;}
+
+  .modal-header{padding:14px 48px;display:flex;align-items:center;justify-content:center;position:relative;
+    border-bottom:1px solid #7c3aed;background:#2a2438;}
+  .modal-title{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:nowrap;max-width:100%;min-width:0;
+    font-family:'Segoe UI',sans-serif;font-size:15px;font-weight:400;color:var(--text-primary);
+    letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+  .modal-title-text{color:#c4b5fd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .modal-title-dash{color:var(--accent-bright);letter-spacing:0;opacity:.7;flex:0 0 auto;overflow:hidden;}
+  .modal-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:none;
+    background:transparent;color:var(--text-secondary);border-radius:6px;cursor:pointer;font-size:14px;
+    display:flex;align-items:center;justify-content:center;}
+  .modal-close:hover{background:var(--danger);color:#fff;}
+  .label{padding:20px;color:#888;font-size:13px;}
+</style></head>
+<body>
+  <div class="modal">
+    <header class="modal-header">
+      <div class="modal-title">
+        <span class="modal-title-dash">──</span>
+        <span class="modal-title-text">Создать аккаунт</span>
+        <span class="modal-title-dash">──</span>
+      </div>
+      <button class="modal-close" title="Закрыть">&#x2715;</button>
+    </header>
+    <div class="label">Вкладка «Регистрация» — заголовок в одну строку, чёрточки не заезжают на ✕</div>
+  </div>
+
+  <div class="modal">
+    <header class="modal-header">
+      <div class="modal-title">
+        <span class="modal-title-dash">──</span>
+        <span class="modal-title-text">Войти в аккаунт</span>
+        <span class="modal-title-dash">──</span>
+      </div>
+      <button class="modal-close" title="Закрыть">&#x2715;</button>
+    </header>
+    <div class="label">Вкладка «У меня есть аккаунт» — заголовок «Войти в аккаунт»</div>
+  </div>
+</body></html>

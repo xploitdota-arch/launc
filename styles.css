@@ -20,8 +20,18 @@
 
   --accent:          #d4a017;            /* основной цвет бренда */
   --accent-bright:   #f0c040;            /* цвет hover/выделения */
+  --accent-rgb:      212, 160, 23;       /* RGB основного цвета — для теней/подсветок */
   --accent-glow:     rgba(212, 160, 23, 0.45);
   --accent-soft:     rgba(212, 160, 23, 0.12);
+  --accent-soft-2:   rgba(212, 160, 23, 0.20);  /* чуть плотнее — hover-фон строк */
+  --accent-border:   rgba(212, 160, 23, 0.40);  /* рамки панелей/виджетов */
+  --accent-tint:     rgba(212, 160, 23, 0.85);  /* акцентный текст заголовков */
+
+  /* Фоны панелей под акцент (для модалок/виджетов меню) */
+  --panel-solid:     #1a1625;            /* основной фон модалок */
+  --panel-header:    #2a2438;            /* шапка модалок */
+  --panel-deep:      #0f0c17;            /* самый тёмный фон (поля ввода, подвал) */
+  --panel-line:      #3a2f4a;            /* нейтральные разделители/рамки */
 
   /* Кнопка ИГРАТЬ */
   --play-btn-light:        #e23535;
@@ -629,7 +639,7 @@ html, body {
 }
 
 .modal-header {
-  padding: 14px 16px;
+  padding: 14px 48px;               /* ✅ резерв места под кнопку закрытия справа/слева */
   display: flex;
   align-items: center;
   justify-content: center;          /* ✅ заголовок по центру */
@@ -640,18 +650,26 @@ html, body {
 .modal-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: nowrap;                /* ✅ не переносим на две строки */
+  max-width: 100%;
+  min-width: 0;
   font-family: 'Minecraft', 'Segoe UI', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   color: var(--text-primary);           /* ✅ белый, не янтарный */
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-transform: uppercase;
+  white-space: nowrap;             /* ✅ текст в одну строку */
   -webkit-font-smoothing: none;
 }
 
 .modal-title-text {
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .modal-title-dash {
@@ -659,6 +677,8 @@ html, body {
   letter-spacing: 0;
   font-family: inherit;
   opacity: 0.7;
+  flex: 0 0 auto;                  /* ✅ чёрточки не растягиваются и не заезжают */
+  overflow: hidden;
 }
 
 .modal-close {
@@ -3109,13 +3129,13 @@ html, body {
   top: 16px;
   right: 16px;
   width: 240px;
-  background: rgba(26, 22, 37, 0.85);
+  background: var(--bg-panel);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(124, 58, 237, 0.4);
+  border: 1px solid var(--accent-border);
   border-radius: 12px;
   padding: 12px;
   z-index: 5;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 24px rgba(var(--accent-rgb), 0.12);
 }
 .ofw-header {
   display: flex;
@@ -3123,7 +3143,7 @@ html, body {
   gap: 8px;
   margin-bottom: 10px;
   font-size: 12px;
-  color: #c4b5fd;
+  color: var(--accent-bright);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -3137,7 +3157,7 @@ html, body {
   margin-left: auto;
   background: transparent;
   border: none;
-  color: #c4b5fd;
+  color: var(--accent-bright);
   font-size: 18px;
   cursor: pointer;
   padding: 0 4px;
@@ -3159,7 +3179,7 @@ html, body {
   cursor: pointer;
   transition: background 0.15s;
 }
-.ofw-row:hover { background: rgba(124,58,237,0.2); }
+.ofw-row:hover { background: var(--accent-soft-2); }
 .ofw-row img {
   width: 22px; height: 22px;
   image-rendering: pixelated;
@@ -3296,8 +3316,8 @@ html, body {
   left: 0;
   right: 0;
   margin-top: 4px;
-  background: #0f0c17;
-  border: 1px solid #7c3aed;
+  background: var(--panel-deep);
+  border: 1px solid var(--accent);
   border-radius: 8px;
   max-height: 240px;
   overflow-y: auto;
@@ -3310,10 +3330,10 @@ html, body {
   padding: 6px 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 1px solid #2a2438;
+  border-bottom: 1px solid var(--panel-header);
   position: sticky;
   top: 0;
-  background: #0f0c17;
+  background: var(--panel-deep);
 }
 .friends-suggest-row {
   display: flex;
@@ -3325,7 +3345,7 @@ html, body {
 }
 .friends-suggest-row:hover,
 .friends-suggest-row.active {
-  background: rgba(124,58,237,0.25);
+  background: var(--accent-soft-2);
 }
 .friends-suggest-row img {
   width: 24px; height: 24px;
@@ -3351,9 +3371,9 @@ html, body {
 
 /* === Новости из Discord === */
 .news-card {
-  background: #0f0c17;
-  border: 1px solid #2a2438;
-  border-left: 3px solid #5865f2;
+  background: var(--panel-deep);
+  border: 1px solid var(--panel-header);
+  border-left: 3px solid var(--accent);
   border-radius: 8px;
   padding: 12px 14px;
   display: flex;
@@ -3391,7 +3411,7 @@ html, body {
   word-wrap: break-word;
 }
 .news-body a {
-  color: #a5b4fc;
+  color: var(--accent-bright);
   text-decoration: underline;
 }
 .news-images {
@@ -3457,7 +3477,7 @@ html, body {
     0 0 0 1px rgba(124,58,237,0.2),
     0 0 40px rgba(124,58,237,0.15);
   opacity: 0;
-  transform: translateY(8px) scale(0.96);
+  transform: translateY(-8px) scale(0.96);
   transition: opacity 0.18s ease, transform 0.18s cubic-bezier(.22, 1, .36, 1);
   pointer-events: none;
 }

@@ -345,7 +345,7 @@ function renderAccountDropdown() {
   });
 }
 
-/** Позиционирует fixed-дропдаун над карточкой аккаунта */
+/** Позиционирует fixed-дропдаун ПОД карточкой аккаунта (так же, как список версий) */
 function positionDropdown() {
   if (!accountDropdown || !accountSelector) return;
   const rect = accountSelector.getBoundingClientRect();
@@ -353,14 +353,16 @@ function positionDropdown() {
   const dropdownH = accountDropdown.offsetHeight || 200;
   // Центрируем по X относительно карточки
   let x = rect.left + rect.width / 2 - dropdownW / 2;
-  let y = rect.top - dropdownH - 10;
+  // По умолчанию открываем ВНИЗ (под карточкой)
+  let y = rect.bottom + 10;
   // Не вылезаем за края окна
   const margin = 8;
   if (x < margin) x = margin;
   if (x + dropdownW > window.innerWidth - margin) x = window.innerWidth - dropdownW - margin;
-  if (y < margin) {
-    // если сверху не помещается — открываем снизу
-    y = rect.bottom + 10;
+  // Если снизу не помещается — открываем вверх
+  if (y + dropdownH > window.innerHeight - margin) {
+    y = rect.top - dropdownH - 10;
+    if (y < margin) y = margin;
   }
   accountDropdown.style.left = x + 'px';
   accountDropdown.style.top  = y + 'px';
@@ -2073,6 +2075,15 @@ function darken(hex, percent) {
   return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`;
 }
 
+function lighten(hex, percent) {
+  const { r, g, b } = hexToRgb(hex);
+  const f = percent / 100;
+  const nr = Math.min(255, Math.round(r + (255 - r) * f));
+  const ng = Math.min(255, Math.round(g + (255 - g) * f));
+  const nb = Math.min(255, Math.round(b + (255 - b) * f));
+  return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`;
+}
+
 function applyTheme() {
   const root = document.documentElement;
 
@@ -2083,6 +2094,12 @@ function applyTheme() {
   // --accent-bright (hover) — управляет всеми hover-эффектами
   root.style.setProperty('--accent-bright', theme.hover);
   root.style.setProperty('--accent-soft',   hexToRgba(theme.hover, 0.15));
+  root.style.setProperty('--accent-soft-2', hexToRgba(theme.hover, 0.20));
+  root.style.setProperty('--accent-border', hexToRgba(theme.primary, 0.45));
+  root.style.setProperty('--accent-tint',   theme.hover);
+
+  // RGB основного цвета — для теней/свечений в меню
+  root.style.setProperty('--accent-rgb', hexToRgbStr(theme.primary));
 
   // Панели
   const panelRgb = hexToRgbStr(theme.panel);
@@ -2090,6 +2107,13 @@ function applyTheme() {
   root.style.setProperty('--bg-panel',       `rgba(${panelRgb}, 0.85)`);
   root.style.setProperty('--bg-panel-hover', `rgba(${panelRgb}, 0.92)`);
   root.style.setProperty('--bg-dropdown',    `rgba(${panelRgb}, 0.97)`);
+
+  // Фоны под акцент для модалок меню (Сервер / Друзья / Новости / Purple)
+  // строятся от цвета панели, чтобы оставаться в тон теме
+  root.style.setProperty('--panel-solid',  `rgb(${panelRgb})`);
+  root.style.setProperty('--panel-header', lighten(theme.panel, 14));
+  root.style.setProperty('--panel-deep',   darken(theme.panel, 25));
+  root.style.setProperty('--panel-line',   lighten(theme.panel, 22));
 
   // Цвета для превью лоудера (фон = панели, главный цвет = hover, градиент = primary)
   const mainRgb = hexToRgb(theme.hover);
@@ -2521,7 +2545,7 @@ applyTheme();
     if (total > 0) {
       friendsBadge.textContent = total > 99 ? '99+' : String(total);
       friendsBadge.style.display = 'flex';
-      friendsBadge.style.background = incoming.length > 0 ? '#ef4444' : '#7c3aed';
+      friendsBadge.style.background = incoming.length > 0 ? '#ef4444' : 'var(--accent)';
     } else {
       friendsBadge.style.display = 'none';
     }
@@ -2583,7 +2607,7 @@ applyTheme();
     friends.forEach(f => {
       const row = document.createElement('div');
       row.style.cssText = 'display:flex; align-items:center; justify-content:space-between; gap:8px; background:rgba(255,255,255,0.04); padding:10px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s;';
-      row.onmouseenter = () => row.style.background = 'rgba(124,58,237,0.15)';
+      row.onmouseenter = () => row.style.background = 'var(--accent-soft)';
       row.onmouseleave = () => row.style.background = 'rgba(255,255,255,0.04)';
       const unreadCount = unread[f.name] || 0;
       row.innerHTML = `
@@ -2604,7 +2628,7 @@ applyTheme();
             </div>
           </div>
         </div>
-        <span style="color:#7c3aed; font-size:18px;">›</span>
+        <span style="color:var(--accent); font-size:18px;">›</span>
       `;
       row.addEventListener('click', () => openFriendActions(f.name));
       listEl.appendChild(row);
@@ -3213,7 +3237,7 @@ applyTheme();
         if (display > 0) {
           badge.textContent = display > 99 ? '99+' : String(display);
           badge.style.display = 'flex';
-          badge.style.background = '#7c3aed'; // фиолетовый — есть сообщения
+          badge.style.background = 'var(--accent)'; // акцент темы — есть сообщения
         }
       }
     } catch {}
@@ -3940,7 +3964,7 @@ applyTheme();
             }
             // фоллбэк — ссылка
             return `<a href="${v.source || v.url}" target="_blank" rel="noopener"
-                       style="color:#a5b4fc; display:inline-block; padding:8px 12px; background:#0f0c17; border:1px solid #2a2438; border-radius:6px;">▶ Открыть видео</a>`;
+                       style="color:var(--accent-bright); display:inline-block; padding:8px 12px; background:var(--panel-deep); border:1px solid var(--panel-header); border-radius:6px;">▶ Открыть видео</a>`;
           }
           // Прямой mp4/webm файл
           return `<video class="news-video" controls preload="metadata" ${v.poster ? `poster="${v.poster}"` : ''}>
@@ -3984,7 +4008,7 @@ applyTheme();
       const data = await res.json();
       if (!data.enabled) {
         list.innerHTML = `<div class="news-empty">📰 Новости пока не настроены<br>
-          <span style="color:#888;">Админу нужно настроить Discord-бота в <code style="color:#a5b4fc;">plugins/PurpleStatus/config.yml</code></span></div>`;
+          <span style="color:#888;">Админу нужно настроить Discord-бота в <code style="color:var(--accent-bright);">plugins/PurpleStatus/config.yml</code></span></div>`;
         badge.style.display = 'none';
         return;
       }
