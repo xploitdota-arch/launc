@@ -3202,6 +3202,62 @@ html, body {
   padding: 8px 0;
 }
 
+/* === Свёрнутая иконка виджета «Друзья онлайн» === */
+.online-friends-collapsed {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-panel);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  cursor: pointer;
+  z-index: 5;
+  padding: 0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 24px rgba(var(--accent-rgb), 0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.online-friends-collapsed:hover {
+  transform: scale(1.06);
+  border-color: var(--accent-bright);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 28px rgba(var(--accent-rgb), 0.35);
+}
+.online-friends-collapsed img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+  animation: logoGlow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+.ofc-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #4ade80;
+  color: #0b0b0f;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px #4ade80;
+  pointer-events: none;
+}
+
+/* Когда виджет свёрнут — поворачиваем стрелочку (на случай, если разворачивать обратно тоже через неё) */
+.online-friends-widget.is-collapsed { display: none !important; }
+
 /* === Диалоги в модалке «Сообщения» === */
 .dialog-row {
   display: flex;

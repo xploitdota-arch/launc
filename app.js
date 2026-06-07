@@ -3262,9 +3262,55 @@ applyTheme();
   const wTitle    = document.getElementById('ofwTitle');
   const wList     = document.getElementById('ofwList');
   const wOpenBtn  = document.getElementById('ofwOpenFriends');
+  const collapsedBtn = document.getElementById('onlineFriendsCollapsed');
+  const collapsedBadge = document.getElementById('ofcBadge');
   const friendsBtn = document.getElementById('friendsBtn');
 
   if (!widget) return;
+
+  // --- Сворачивание / разворачивание виджета ---
+  const COLLAPSED_KEY = 'meloncher.ofwCollapsed';
+  let isCollapsed = false;
+  try { isCollapsed = localStorage.getItem(COLLAPSED_KEY) === '1'; } catch {}
+  let lastOnlineCount = 0;
+  let widgetHasData = false; // показывали ли виджет хоть раз (есть ли что показывать)
+
+  function applyCollapseState() {
+    if (!widgetHasData) {
+      // нечего показывать — прячем оба
+      widget.style.display = 'none';
+      if (collapsedBtn) collapsedBtn.style.display = 'none';
+      return;
+    }
+    if (isCollapsed) {
+      widget.style.display = 'none';
+      if (collapsedBtn) {
+        collapsedBtn.style.display = 'flex';
+        if (collapsedBadge) {
+          if (lastOnlineCount > 0) {
+            collapsedBadge.textContent = String(lastOnlineCount);
+            collapsedBadge.style.display = 'flex';
+          } else {
+            collapsedBadge.style.display = 'none';
+          }
+        }
+      }
+    } else {
+      widget.style.display = 'block';
+      if (collapsedBtn) collapsedBtn.style.display = 'none';
+    }
+  }
+
+  function collapseWidget() {
+    isCollapsed = true;
+    try { localStorage.setItem(COLLAPSED_KEY, '1'); } catch {}
+    applyCollapseState();
+  }
+  function expandWidget() {
+    isCollapsed = false;
+    try { localStorage.setItem(COLLAPSED_KEY, '0'); } catch {}
+    applyCollapseState();
+  }
 
   function myNick() {
     const v = (document.getElementById('usernameInput')?.value || '').trim();
@@ -3285,13 +3331,14 @@ applyTheme();
 
   function renderWidget(friends) {
     const online = friends.filter(f => f.online);
+    widgetHasData = true;
+    lastOnlineCount = online.length;
     if (online.length === 0) {
-      widget.style.display = 'block';
       wTitle.textContent = 'Никого нет онлайн';
       wList.innerHTML = '<div class="ofw-empty">Подожди, кто-нибудь зайдёт 👀</div>';
+      applyCollapseState();
       return;
     }
-    widget.style.display = 'block';
     wTitle.textContent = `${online.length} ${plural(online.length, ['друг','друга','друзей'])} онлайн`;
     wList.innerHTML = '';
     online.slice(0, 6).forEach(f => {
@@ -3319,6 +3366,7 @@ applyTheme();
       more.addEventListener('click', () => friendsBtn && friendsBtn.click());
       wList.appendChild(more);
     }
+    applyCollapseState();
   }
 
   function plural(n, forms) {
@@ -3414,7 +3462,16 @@ applyTheme();
     });
   }
 
-  if (wOpenBtn) wOpenBtn.addEventListener('click', () => friendsBtn && friendsBtn.click());
+  // Стрелочка ›  — сворачивает виджет в иконку Аматэрасу
+  if (wOpenBtn) wOpenBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    collapseWidget();
+  });
+  // Клик по свёрнутой иконке — разворачивает виджет обратно
+  if (collapsedBtn) collapsedBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    expandWidget();
+  });
 
   setInterval(poll, POLL_MS);
   setTimeout(poll, 2500);
