@@ -1,7 +1,8 @@
 {
-  "name": "meloncher",
+  "name": "amaterasu",
+  "productName": "Amaterasu",
   "version": "1.0.0",
-  "description": "Minecraft launcher with custom UI",
+  "description": "Amaterasu Minecraft launcher",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

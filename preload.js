@@ -44,4 +44,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onLaunchProgress:  (cb)     => ipcRenderer.on('launch-progress', (_e, data) => cb(data)),
   onLaunchClose:     (cb)     => ipcRenderer.on('launch-close', (_e, code) => cb(code)),
   onLaunchData:      (cb)     => ipcRenderer.on('launch-data', (_e, data) => cb(data)),
+
+  // Desktop-уведомления
+  notify:            (data)    => ipcRenderer.invoke('notify', data),
+  onNotificationClick: (cb)    => ipcRenderer.on('notification-click', (_e, data) => cb(data)),
+  focusWindow:       ()        => ipcRenderer.send('focus-window'),
+
+  // Скриншоты Minecraft
+  listScreenshots:   ()        => ipcRenderer.invoke('screenshots-list'),
+  readScreenshot:    (file)    => ipcRenderer.invoke('screenshots-read', file),
+  onScreenshotNew:   (cb)      => ipcRenderer.on('screenshot-new', (_e, data) => cb(data)),
 });

@@ -45,13 +45,23 @@
             <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.79 0 1.5-.71 1.5-1.5 0-.4-.15-.76-.4-1.04a1.5 1.5 0 0 1-.4-1.05c0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-5.5-4.5-10-10-10z"/>
           </svg>
         </button>
-        <button class="side-btn" title="Новости">
+        <button class="side-btn" id="newsBtn" title="Новости">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 4h16v16H4z"/>
             <line x1="8" y1="9" x2="16" y2="9"/>
             <line x1="8" y1="13" x2="16" y2="13"/>
             <line x1="8" y1="17" x2="12" y2="17"/>
           </svg>
+          <span class="friends-badge" id="newsBadge" style="display:none; background:#5865f2;">●</span>
+        </button>
+        <button class="side-btn" id="friendsBtn" title="Друзья">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span class="friends-badge" id="friendsBadge" style="display:none;">0</span>
         </button>
         <button class="side-btn" id="serverBtn" title="Сервер Purple">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -82,7 +92,17 @@
 
     <!-- Правая часть -->
     <div class="right-pane">
-      <div class="play-area"></div>
+      <div class="play-area">
+        <!-- Виджет «Друзья онлайн» -->
+        <div id="onlineFriendsWidget" class="online-friends-widget" style="display:none;">
+          <div class="ofw-header">
+            <span class="ofw-dot"></span>
+            <span id="ofwTitle">Никого нет онлайн</span>
+            <button class="ofw-open" id="ofwOpenFriends" title="Открыть друзей">›</button>
+          </div>
+          <div id="ofwList" class="ofw-list"></div>
+        </div>
+      </div>
 
       <div class="footer">
         <div class="version-selector" id="versionSelector">
@@ -96,11 +116,20 @@
           </svg>
         </div>
 
-        <div class="account-input">
-          <div class="card-label">Никнейм</div>
-          <div class="input-wrap">
-            <input type="text" id="usernameInput" class="username-input" value="Ame" maxlength="16" spellcheck="false" />
+        <div class="account-input" id="accountSelector" style="position:relative; cursor:pointer;">
+          <div class="card-label">Аккаунт</div>
+          <div class="input-wrap" style="display:flex; align-items:center; gap:8px;">
+            <img id="accountAvatar" src="" width="20" height="20"
+                 style="border-radius:3px; image-rendering:pixelated; display:none;" />
+            <span id="accountCurrentName" class="username-input" style="flex:1; background:none; border:none; padding:0; color:inherit; font:inherit; outline:none; cursor:pointer; color:#888; font-style:italic;">Нет аккаунта</span>
+            <svg class="chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
           </div>
+          <!-- скрытый input для совместимости со всем существующим кодом -->
+          <input type="hidden" id="usernameInput" value="" />
+          <!-- Dropdown с аккаунтами -->
+          <div id="accountDropdown" class="account-dropdown" style="display:none;"></div>
         </div>
       </div>
 
@@ -284,9 +313,9 @@
     </div>
   </div>
 
-  <!-- Мини-модалка игрока -->
+  <!-- Профиль игрока -->
   <div class="modal-overlay" id="playerModal">
-    <div class="modal" style="width: 340px; max-height: 240px; background: #1a1625; border: 2px solid #d4a017;">
+    <div class="modal" style="width: 420px; background: #1a1625; border: 2px solid #d4a017;">
       <header class="modal-header" style="background: #2a2438; border-bottom: 1px solid #d4a017;">
         <div class="modal-title">
           <span class="modal-title-dash">────</span>
@@ -295,12 +324,193 @@
         </div>
         <button class="modal-close" id="playerModalClose" title="Закрыть">&#x2715;</button>
       </header>
-      <div class="modal-body" style="padding: 30px 24px; text-align: center; background: #1a1625;">
-        <div style="margin-bottom: 24px; color: #a8a098; font-size: 15px;">Информация об игроке</div>
-        <button id="copyNickBtn" 
-                style="width: 100%; padding: 16px 0; font-size: 16px; background: #ffd755; color: #1a1625; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(255, 215, 85, 0.4);">
-          Скопировать ник
+      <div class="modal-body" style="padding: 22px 24px; background: #1a1625; display:flex; flex-direction:column; gap:16px;">
+        <!-- Аватар + скин -->
+        <div style="display:flex; align-items:center; gap:16px;">
+          <img id="playerSkinImg" src="" alt=""
+               style="width:96px; height:160px; image-rendering:pixelated; background:#0f0c17; border:1px solid #3a2f4a; border-radius:8px; object-fit:contain;" />
+          <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+            <div>
+              <div style="color:#888; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Статус</div>
+              <div id="playerStatus" style="color:#4ade80; font-size:14px; font-weight:600; margin-top:2px;">● Онлайн</div>
+            </div>
+            <div>
+              <div style="color:#888; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Наиграно</div>
+              <div id="playerPlaytime" style="color:#fff; font-size:14px; font-weight:600; margin-top:2px;">— ч —мин</div>
+            </div>
+            <div>
+              <div style="color:#888; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">Отношения</div>
+              <div id="playerRelation" style="color:#a8a098; font-size:13px; margin-top:2px;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Действия -->
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button id="addFriendBtn"
+                  style="width: 100%; padding: 12px 0; font-size: 14px; background: #7c3aed; color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);">
+            ➕ Добавить в друзья
+          </button>
+          <button id="messagePlayerBtn"
+                  style="width: 100%; padding: 12px 0; font-size: 14px; background: #2a2438; color: #c4b5fd; border: 1px solid #7c3aed; border-radius: 10px; font-weight: 600; cursor: pointer; display:none;">
+            💬 Написать сообщение
+          </button>
+          <button id="copyNickBtn"
+                  style="width: 100%; padding: 12px 0; font-size: 14px; background: transparent; color: #ffd755; border: 1px solid #d4a017; border-radius: 10px; font-weight: 600; cursor: pointer;">
+            📋 Скопировать ник
+          </button>
+          <button id="ignorePlayerBtn"
+                  style="width: 100%; padding: 10px 0; font-size: 12px; background: transparent; color: #888; border: 1px solid #3a2f4a; border-radius: 8px; font-weight: 500; cursor: pointer; margin-top:4px;">
+            🚫 Заблокировать
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Модалка «Друзья» -->
+  <div class="modal-overlay" id="friendsModal">
+    <div class="modal" style="width: 480px; max-height: 560px; background: #1a1625; border: 2px solid #7c3aed; display: flex; flex-direction: column;">
+      <header class="modal-header" style="background: #2a2438; border-bottom: 1px solid #7c3aed;">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text" style="color:#c4b5fd;">Друзья</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="friendsClose" title="Закрыть">&#x2715;</button>
+      </header>
+      <div class="modal-body" style="padding: 16px 20px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; background:#1a1625;">
+        <!-- Поле «добавить» -->
+        <div style="display:flex; gap:8px; position:relative;">
+          <div style="flex:1; position:relative;">
+            <input id="friendsAddInput" type="text" placeholder="Ник игрока или выбери из онлайн..."
+                   maxlength="16" spellcheck="false" autocomplete="off"
+                   style="width:100%; padding:10px 12px 10px 36px; background:#0f0c17; border:1px solid #3a2f4a; color:#fff; border-radius:8px; font-size:14px; box-sizing:border-box;" />
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#666;">🔍</span>
+            <div id="friendsAddDropdown" class="friends-suggest" style="display:none;"></div>
+          </div>
+          <button id="friendsAddBtn"
+                  style="padding:10px 16px; background:#7c3aed; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Добавить</button>
+        </div>
+
+        <!-- Входящие заявки -->
+        <div>
+          <div style="color:#c4b5fd; font-size:13px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px;">
+            ВХОДЯЩИЕ ЗАЯВКИ <span id="friendsIncomingCount" style="color:#888; font-weight:400;">(0)</span>
+          </div>
+          <div id="friendsIncomingList" style="display:flex; flex-direction:column; gap:6px;">
+            <div style="color:#666; font-size:13px; padding:8px 0;">Нет входящих</div>
+          </div>
+        </div>
+
+        <!-- Список друзей -->
+        <div>
+          <div style="color:#c4b5fd; font-size:13px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px;">
+            МОИ ДРУЗЬЯ <span id="friendsCount" style="color:#888; font-weight:400;">(0)</span>
+          </div>
+          <div id="friendsList" style="display:flex; flex-direction:column; gap:6px;">
+            <div style="color:#666; font-size:13px; padding:8px 0;">Список пуст</div>
+          </div>
+        </div>
+
+        <!-- Игнор-лист -->
+        <details style="margin-top:6px;">
+          <summary style="color:#fbbf24; font-size:13px; font-weight:700; cursor:pointer; padding:6px 0; letter-spacing:0.5px;">
+            🚫 ИГНОР-ЛИСТ <span id="ignoredCount" style="color:#888; font-weight:400;">(0)</span>
+          </summary>
+          <div id="ignoredList" style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+            <div style="color:#666; font-size:13px; padding:8px 0;">Никого не заблокировано</div>
+          </div>
+        </details>
+      </div>
+      <div style="padding: 10px 20px; background:#0f0c17; border-top:1px solid #3a2f4a; color:#666; font-size:11px; text-align:center;">
+        Запросы доставляются в чат сервера. Принять можно командой <span style="color:#a78bfa;">/friend accept &lt;ник&gt;</span> или кликом на [ПРИНЯТЬ].
+      </div>
+    </div>
+  </div>
+
+  <!-- Меню действий с другом -->
+  <div class="modal-overlay" id="friendActionsModal">
+    <div class="modal" style="width: 300px; background:#1a1625; border:2px solid #7c3aed;">
+      <header class="modal-header" style="background:#2a2438; border-bottom:1px solid #7c3aed;">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text" id="friendActionsName" style="color:#c4b5fd;">Игрок</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="friendActionsClose" title="Закрыть">&#x2715;</button>
+      </header>
+      <div class="modal-body" style="padding:18px; display:flex; flex-direction:column; gap:10px; background:#1a1625;">
+        <button id="friendActionMessage"
+                style="padding:14px; background:#7c3aed; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:14px;">
+          💬 Отправить сообщение
         </button>
+        <button id="friendActionIgnore"
+                style="padding:12px; background:transparent; color:#fbbf24; border:1px solid #fbbf24; border-radius:8px; cursor:pointer; font-weight:600; font-size:13px;">
+          🚫 Заблокировать
+        </button>
+        <button id="friendActionRemove"
+                style="padding:12px; background:transparent; color:#ef4444; border:1px solid #ef4444; border-radius:8px; cursor:pointer; font-weight:600; font-size:13px;">
+          ✕ Удалить из друзей
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Окно чата с другом -->
+  <div class="modal-overlay" id="chatModal">
+    <div class="modal" style="width:480px; height:560px; background:#1a1625; border:2px solid #7c3aed; display:flex; flex-direction:column;">
+      <header class="modal-header" style="background:#2a2438; border-bottom:1px solid #7c3aed;">
+        <div class="modal-title" style="display:flex; align-items:center; gap:10px;">
+          <button id="chatBack" title="Назад"
+                  style="background:transparent; color:#c4b5fd; border:none; cursor:pointer; font-size:18px; padding:0 4px;">←</button>
+          <img id="chatAvatar" src="" width="24" height="24"
+               style="border-radius:4px; image-rendering:pixelated;" onerror="this.style.display='none'" />
+          <span id="chatPeerName" style="color:#fff; font-weight:700;">Чат</span>
+          <span id="chatPeerStatus" style="font-size:11px; color:#666; margin-left:4px;"></span>
+        </div>
+        <button class="modal-close" id="chatClose" title="Закрыть">&#x2715;</button>
+      </header>
+
+      <div id="chatMessages"
+           style="flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:8px; background:#0f0c17;">
+        <div style="color:#666; text-align:center; font-size:13px; padding:20px;">Загрузка...</div>
+      </div>
+
+      <form id="chatForm" style="display:flex; gap:8px; padding:10px 14px; background:#1a1625; border-top:1px solid #3a2f4a;">
+        <button type="button" id="chatAttachBtn" title="Прикрепить скриншот"
+                style="padding:10px 12px; background:#2a2438; color:#86efac; border:1px solid #3a2f4a; border-radius:8px; cursor:pointer; font-size:16px;">📎</button>
+        <input id="chatInput" type="text" autocomplete="off" maxlength="500"
+               placeholder="Напиши сообщение..."
+               style="flex:1; padding:10px 12px; background:#0f0c17; border:1px solid #3a2f4a; color:#fff; border-radius:8px; font-size:14px;" />
+        <button type="submit"
+                style="padding:10px 18px; background:#7c3aed; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:700;">↵</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Мини-пикер скриншотов для чата -->
+  <div class="modal-overlay" id="chatAttachPicker" style="z-index: 1100;">
+    <div class="modal" style="width: 600px; max-height: 540px; background:#1a1625; border:2px solid #86efac; display:flex; flex-direction:column;">
+      <header class="modal-header" style="background:#2a2438; border-bottom:1px solid #86efac;">
+        <button id="chatAttachRefresh" title="Обновить список"
+                style="background:transparent; border:1px solid #86efac; color:#86efac; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:13px; margin-right:8px;">
+          ↻
+        </button>
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text" style="color:#86efac;">Выбери скриншот</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="chatAttachClose" title="Закрыть">&#x2715;</button>
+      </header>
+      <div style="padding:8px 14px; background:#0f0c17; color:#888; font-size:11px; border-bottom:1px solid #3a2f4a;">
+        Скриншоты Minecraft из <code style="color:#86efac;">.meloncher/screenshots/</code>. Сделать новый — <b style="color:#fff;">F2</b> в игре.
+      </div>
+      <div id="chatAttachGrid" style="flex:1; overflow-y:auto; padding:12px; display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:8px; align-content:start;">
+        <div style="grid-column:1/-1; color:#666; text-align:center; padding:30px;">Загрузка...</div>
       </div>
     </div>
   </div>
@@ -321,6 +531,103 @@
         <button id="purpleForgeBtn" style="width:100%; padding:14px; background:#3a2f4a; color:#ffd755; border:1px solid #d4a017; border-radius:8px; cursor:pointer; font-size:15px;">Forge 1.21.4</button>
         <button id="purpleOptifineBtn" style="width:100%; padding:14px; background:#3a2f4a; color:#ffd755; border:1px solid #d4a017; border-radius:8px; cursor:pointer; font-size:15px;">OptiFine 1.21.4</button>
         <button id="purpleForgeOptifineBtn" style="width:100%; padding:14px; background:#3a2f4a; color:#ffd755; border:1px solid #d4a017; border-radius:8px; cursor:pointer; font-size:15px;">Forge + OptiFine 1.21.4</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Просмотр одного скриншота -->
+  <div class="modal-overlay" id="screenshotViewer" style="z-index: 1000;">
+    <div class="modal" style="width: 90vw; max-width: 1100px; max-height: 90vh; background:#0f0c17; border:2px solid #22c55e; display:flex; flex-direction:column;">
+      <header class="modal-header" style="background:#1a1625; border-bottom:1px solid #22c55e;">
+        <div class="modal-title">
+          <span class="modal-title-text" id="ssViewerTitle" style="color:#86efac;">Скриншот</span>
+        </div>
+        <button class="modal-close" id="ssViewerClose" title="Закрыть">&#x2715;</button>
+      </header>
+      <div style="flex:1; display:flex; align-items:center; justify-content:center; background:#000; overflow:auto;">
+        <img id="ssViewerImg" src="" style="max-width:100%; max-height:75vh; object-fit:contain;" />
+      </div>
+      <div id="ssViewerActions" style="padding:12px 16px; background:#1a1625; border-top:1px solid #3a2f4a; display:flex; gap:8px; align-items:center;">
+        <div id="ssViewerMeta" style="color:#888; font-size:11px; flex:1;"></div>
+        <button id="ssDownloadBtn" style="padding:8px 14px; background:transparent; color:#86efac; border:1px solid #22c55e; border-radius:6px; cursor:pointer;">⬇ Скачать</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка «Новости» (Discord) -->
+  <div class="modal-overlay" id="newsModal">
+    <div class="modal" style="width: 520px; height: 600px; background:#1a1625; border:2px solid #5865f2; display:flex; flex-direction:column;">
+      <header class="modal-header" style="background:#2a2438; border-bottom:1px solid #5865f2;">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text" style="color:#a5b4fc;">📰 Новости сервера</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="newsClose" title="Закрыть">&#x2715;</button>
+      </header>
+      <div id="newsList" style="flex:1; overflow-y:auto; padding:12px; background:#1a1625; display:flex; flex-direction:column; gap:10px;">
+        <div style="color:#666; text-align:center; padding:30px; font-size:13px;">Загрузка...</div>
+      </div>
+      <div style="padding:8px 14px; background:#0f0c17; border-top:1px solid #3a2f4a; color:#666; font-size:11px; text-align:center;">
+        Из канала «новости» в Discord · обновляется автоматически
+      </div>
+    </div>
+  </div>
+
+  <!-- Модалка регистрации / входа -->
+  <div class="modal-overlay" id="addAccountModal">
+    <div class="modal" style="width: 360px; background:#1a1625; border:2px solid #7c3aed;">
+      <header class="modal-header" style="background:#2a2438; border-bottom:1px solid #7c3aed;">
+        <div class="modal-title">
+          <span class="modal-title-dash">────</span>
+          <span class="modal-title-text" id="authModalTitle" style="color:#c4b5fd;">Создать аккаунт</span>
+          <span class="modal-title-dash">────</span>
+        </div>
+        <button class="modal-close" id="addAccountClose" title="Закрыть">&#x2715;</button>
+      </header>
+
+      <!-- Табы -->
+      <div style="display:flex; padding:8px 14px 0; gap:6px; background:#1a1625;">
+        <button class="auth-tab active" data-tab="register"
+                style="flex:1; padding:8px; background:#7c3aed; color:#fff; border:none; border-radius:6px 6px 0 0; cursor:pointer; font-weight:600; font-size:13px;">
+          Регистрация
+        </button>
+        <button class="auth-tab" data-tab="login"
+                style="flex:1; padding:8px; background:transparent; color:#c4b5fd; border:1px solid #3a2f4a; border-bottom:none; border-radius:6px 6px 0 0; cursor:pointer; font-weight:600; font-size:13px;">
+          У меня есть аккаунт
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding:18px 20px; background:#1a1625; display:flex; flex-direction:column; gap:12px; border-top:1px solid #3a2f4a;">
+        <div>
+          <label style="color:#a8a098; font-size:12px; display:block; margin-bottom:4px;">Ник</label>
+          <input id="addAccountInput" type="text" maxlength="16" placeholder="3–16 символов: a-z, 0-9, _"
+                 autocomplete="off" spellcheck="false"
+                 style="width:100%; padding:11px 12px; background:#0f0c17; color:#fff; border:1px solid #3a2f4a; border-radius:8px; font-size:14px; font-family:inherit; box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="color:#a8a098; font-size:12px; display:block; margin-bottom:4px;">Пароль <span style="color:#666;">(мин. 4 символа)</span></label>
+          <div style="position:relative;">
+            <input id="addAccountPwd" type="password" maxlength="100" placeholder="••••••••"
+                   autocomplete="off"
+                   style="width:100%; padding:11px 40px 11px 12px; background:#0f0c17; color:#fff; border:1px solid #3a2f4a; border-radius:8px; font-size:14px; font-family:inherit; box-sizing:border-box;" />
+            <button type="button" id="pwdToggleBtn"
+                    style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:#888; cursor:pointer; padding:4px 8px; font-size:13px;">👁</button>
+          </div>
+        </div>
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; color:#a8a098; font-size:13px; user-select:none;">
+          <input type="checkbox" id="addAccountRemember" checked
+                 style="width:16px; height:16px; accent-color:#7c3aed; cursor:pointer;" />
+          Запомнить меня
+        </label>
+        <div id="addAccountError" style="color:#ef4444; font-size:12px; min-height:14px;"></div>
+        <button id="addAccountSave"
+                style="padding:13px; background:#7c3aed; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:700; font-size:14px; box-shadow:0 4px 12px rgba(124,58,237,0.4);">
+          Зарегистрироваться
+        </button>
+        <div style="color:#666; font-size:11px; text-align:center; line-height:1.5;">
+          🔒 Пароль защищает твой ник на сервере. Никто другой не сможет зайти под ним.
+        </div>
       </div>
     </div>
   </div>

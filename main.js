@@ -1,4 +1,10 @@
-const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, dialog, Notification, screen } = require('electron');
+
+// === Корректное имя приложения для Windows-уведомлений ===
+app.setName('Amaterasu');
+if (process.platform === 'win32') {
+  app.setAppUserModelId('com.amaterasu.launcher');
+}
 const { Client, Authenticator } = require('minecraft-launcher-core');
 const path  = require('path');
 const fs    = require('fs');
@@ -334,6 +340,8 @@ function createMain() {
     backgroundColor: '#00000000',
     hasShadow: true,
     show: false,
+    center: true,                  // ← по центру экрана
+    skipTaskbar: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -342,6 +350,8 @@ function createMain() {
   });
 
   mainReadyPromise = mainWindow.loadFile('index.html');
+
+  // НЕ показываем mainWindow тут — он откроется только после splash-done (см. ниже)
 
   mainWindow.on('moved',  positionLoaderPreview);
   mainWindow.on('move',   positionLoaderPreview);
@@ -354,6 +364,111 @@ function createMain() {
 
   ipcMain.on('window-min',   () => mainWindow.minimize());
   ipcMain.on('window-close', () => mainWindow.close());
+
+  // === Desktop-уведомления ===
+  ipcMain.handle('notify', (_evt, data = {}) => {
+    if (!Notification.isSupported()) return false;
+    try {
+      const n = new Notification({
+        title: data.title || 'Amaterasu',
+        body:  data.body  || '',
+        silent: !!data.silent,
+        icon: path.join(__dirname, 'assets', 'icon_amaterasu.png')
+      });
+      n.on('click', () => {
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) mainWindow.restore();
+          mainWindow.show();
+          mainWindow.focus();
+        }
+        if (mainWindow && data.payload) {
+          mainWindow.webContents.send('notification-click', data.payload);
+        }
+      });
+      n.show();
+      return true;
+    } catch { return false; }
+  });
+  ipcMain.on('focus-window', () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+  });
+
+  // === Скриншоты Minecraft ===
+  const SCREENSHOTS_DIR = path.join(MC_DIR, 'screenshots');
+
+  ipcMain.handle('screenshots-list', async () => {
+    try {
+      if (!fs.existsSync(SCREENSHOTS_DIR)) return [];
+      const names = fs.readdirSync(SCREENSHOTS_DIR)
+        .filter(n => n.toLowerCase().endsWith('.png'))
+        .map(n => {
+          const stat = fs.statSync(path.join(SCREENSHOTS_DIR, n));
+          return { name: n, size: stat.size, mtime: stat.mtimeMs };
+        })
+        .sort((a, b) => b.mtime - a.mtime);
+      return names;
+    } catch (e) { return []; }
+  });
+
+  ipcMain.handle('screenshots-read', async (_evt, fileName) => {
+    try {
+      // защита от path traversal
+      if (!fileName || fileName.includes('..') || fileName.includes('/') || fileName.includes('\\')) return null;
+      const full = path.join(SCREENSHOTS_DIR, fileName);
+      if (!fs.existsSync(full)) return null;
+      const buf = fs.readFileSync(full);
+      // достанем размеры из PNG (8 байт сигнатуры + 8 байт IHDR-len/тип + 4 width + 4 height)
+      let width = 0, height = 0;
+      if (buf.length > 24) {
+        width  = buf.readUInt32BE(16);
+        height = buf.readUInt32BE(20);
+      }
+      return { base64: buf.toString('base64'), size: buf.length, width, height };
+    } catch (e) { return null; }
+  });
+
+  // Watcher новых скринов — polling раз в 2 сек (fs.watch на Windows работает нестабильно)
+  function startScreenshotWatcher() {
+    try {
+      if (!fs.existsSync(SCREENSHOTS_DIR)) fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
+    } catch (e) { console.warn('[Screenshots] mkdir failed:', e.message); }
+
+    let seen = new Set();
+    try { seen = new Set(fs.readdirSync(SCREENSHOTS_DIR).filter(n => n.toLowerCase().endsWith('.png'))); }
+    catch {}
+
+    setInterval(() => {
+      try {
+        if (!fs.existsSync(SCREENSHOTS_DIR)) return;
+        const names = fs.readdirSync(SCREENSHOTS_DIR).filter(n => n.toLowerCase().endsWith('.png'));
+        for (const name of names) {
+          if (seen.has(name)) continue;
+          // подождём ~600мс чтобы Minecraft дозаписал файл
+          setTimeout(() => {
+            try {
+              const full = path.join(SCREENSHOTS_DIR, name);
+              if (!fs.existsSync(full)) return;
+              seen.add(name);
+              const stat = fs.statSync(full);
+              if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.webContents.send('screenshot-new', {
+                  name, size: stat.size, mtime: stat.mtimeMs
+                });
+              }
+            } catch {}
+          }, 600);
+        }
+        // если файл удалили — забываем
+        for (const name of Array.from(seen)) {
+          if (!names.includes(name)) seen.delete(name);
+        }
+      } catch (e) { /* тихо */ }
+    }, 2000);
+  }
+  startScreenshotWatcher();
   ipcMain.handle('play-minimize-animation', () => playExternalMinimizeAnimation());
 
   // Управление click-through из renderer'а:
@@ -576,12 +691,62 @@ async function performStartupChecks() {
 
 // IPC handlers
 ipcMain.on('splash-done', () => {
-  if (mainWindow) mainWindow.show();
+  if (mainWindow) centerAndShow(mainWindow);
   if (splashWindow) {
     splashWindow.close();
     splashWindow = null;
   }
 });
+
+function centerAndShow(win) {
+  if (!win || win.isDestroyed()) return;
+  try {
+    // Принудительное ручное центрирование на главном дисплее
+    const display = screen.getPrimaryDisplay();
+    const wa = display.workArea;
+    const [w, h] = win.getSize();
+    const x = Math.round(wa.x + (wa.width  - w) / 2);
+    const y = Math.round(wa.y + (wa.height - h) / 2);
+
+    // 1) Показ окна
+    win.show();
+
+    // 2) Прыгает в нужную точку сразу
+    win.setPosition(x, y);
+
+    // 3) И ещё раз — после next-tick (Windows иногда применяет позицию
+    //    только после первого paint)
+    setImmediate(() => {
+      try {
+        if (!win.isDestroyed()) win.setPosition(x, y);
+      } catch {}
+    });
+    // 4) И с задержкой — на случай если transparent-окно «прыгает»
+    setTimeout(() => {
+      try {
+        if (!win.isDestroyed()) {
+          const [cw, ch] = win.getSize();
+          const cx = Math.round(wa.x + (wa.width  - cw) / 2);
+          const cy = Math.round(wa.y + (wa.height - ch) / 2);
+          win.setPosition(cx, cy);
+        }
+      } catch {}
+    }, 200);
+
+    // Поверх всех — на 0.8 сек
+    win.setAlwaysOnTop(true, 'normal');
+    win.focus();
+    win.moveTop();
+    setTimeout(() => {
+      try { if (!win.isDestroyed()) win.setAlwaysOnTop(false); } catch {}
+    }, 800);
+
+    console.log(`[Window] centered to ${x},${y} on ${wa.width}x${wa.height} workArea`);
+  } catch (e) {
+    console.warn('[centering failed]', e.message);
+    try { win.center(); win.show(); } catch {}
+  }
+}
 
 // ====== Менеджер версий ======
 // ====== Forge & OptiFine ======
@@ -2425,24 +2590,35 @@ ipcMain.handle('launch-game', async (evt, options) => {
 
     const minecraftProcess = spawn(javaPath, cmd, {
       cwd: MC_DIR,
-      stdio: 'pipe',
-      windowsHide: true
+      stdio: ['ignore', 'pipe', 'pipe'],
+      windowsHide: true,
+      // Detached: процесс становится самостоятельным.
+      // На Windows + unref() — Minecraft не закроется когда лаунчер закроют.
+      detached: true
     });
+    // Отвязываем от event-loop родителя — лаунчер может закрыться,
+    // Java продолжит работать
+    try { minecraftProcess.unref(); } catch {}
 
-    minecraftProcess.stdout.on('data', (data) => {
+    minecraftProcess.stdout && minecraftProcess.stdout.on('data', (data) => {
       const text = data.toString();
       console.log('[Minecraft]', text);
-      evt.sender.send('launch-data', text);
+      try { evt.sender.send('launch-data', text); } catch {}
     });
 
-    minecraftProcess.stderr.on('data', (data) => {
+    minecraftProcess.stderr && minecraftProcess.stderr.on('data', (data) => {
       const text = data.toString();
       console.error('[Minecraft Error]', text);
-      evt.sender.send('launch-data', text);
+      try { evt.sender.send('launch-data', text); } catch {}
     });
 
     minecraftProcess.on('close', (code) => {
-      evt.sender.send('launch-close', code);
+      try { evt.sender.send('launch-close', code); } catch {}
+    });
+
+    // Если родитель завершится — pipe порвётся, но процесс продолжит жить
+    minecraftProcess.on('error', (err) => {
+      console.error('[Minecraft spawn error]', err);
     });
 
     return { success: true };
